@@ -38,8 +38,11 @@ function App() {
             onSelect={setSelectedCountry}
         />
 
-        <div className="content">
+        <div className="map-container">
             <WorldMap selectedCountry={selectedCountry} />
+        </div>
+
+        <div className="details-container">
             <CountryDetails country={selectedCountry} />
         </div>
     </main>
