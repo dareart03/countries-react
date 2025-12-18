@@ -12,8 +12,6 @@ function App() {
 
     useEffect(() => {
         getAllCountries().then(data => {
-            console.log("Countries from API:", data);
-
             if (Array.isArray(data)) {
                 setCountries(data);
             } else {
@@ -21,13 +19,20 @@ function App() {
             }
         });
     }, []);
-
+    // Поиск
     const filteredCountries = countries.filter(country =>
         country.name.common
             .toLowerCase()
             .includes(search.toLowerCase())
     );
-
+    // Обработчик выбора страны на карте
+    const handleMapSelect = (cca3) => {
+        const country = countries.find(c => c.cca3 === cca3);
+        if (country) {
+            setSelectedCountry(country);
+        }
+    };
+    // Рендер компонента
     return (
         <main className="main">
             <CountryList
@@ -35,11 +40,15 @@ function App() {
             search={search}
             onSearch={setSearch}
             selectedCountry={selectedCountry}
-            onSelect={setSelectedCountry}
+            onSelect={(country) => setSelectedCountry(country)}
         />
 
         <div className="map-container">
-            <WorldMap selectedCountry={selectedCountry} />
+            <WorldMap
+            selectedCountry={selectedCountry}
+            onSelectCountry={handleMapSelect}
+        />
+
         </div>
 
         <div className="details-container">

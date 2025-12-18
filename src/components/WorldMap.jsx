@@ -2,42 +2,58 @@ import * as d3 from "d3";
 import { useEffect, useRef } from "react";
 import worldData from "../data/world.geo.json";
 
-function WorldMap({ selectedCountry }) {
+function WorldMap({ selectedCountry, onSelectCountry }) {
     const ref = useRef(null);
 
     useEffect(() => {
-        const width = 900;
-        const height = 500;
+        const container = ref.current;
+        if (!container) return;
 
-        d3.select(ref.current).selectAll("*").remove();
+        const width = container.clientWidth;
+        const height = container.clientHeight;
 
-        const svg = d3
-            .select(ref.current)
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height);
+        let svg = d3.select(container).select("svg");
 
-        const projection = d3
-            .geoMercator()
-            .scale(140)
-            .translate([width / 2, height / 1.5]);
+        // === создаём карту ОДИН раз ===
+        if (svg.empty()) {
+            svg = d3
+                .select(container)
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
 
-        const path = d3.geoPath().projection(projection);
+            const projection = d3
+                .geoMercator()
+                .fitSize([width, height], worldData);
 
-        svg.selectAll("path")
-            .data(worldData.features)
-            .enter()
-            .append("path")
-            .attr("d", path)
-            .attr("fill", d =>
-                selectedCountry && d.id === selectedCountry.cca3
-                    ? "#ff7043"
-                    : "#cfd8dc"
-            )
-            .attr("stroke", "#555")
-            .attr("stroke-width", 0.5);
+            const path = d3.geoPath().projection(projection);
 
-    }, [selectedCountry]);
+            svg.append("g")
+                .selectAll("path")
+                .data(worldData.features)
+                .enter()
+                .append("path")
+                .attr("class", "country")
+                .attr("d", path)
+                .attr("stroke", "#555")
+                .attr("stroke-width", 0.5)
+                .on("click", (event, d) => {
+                    const code = d.properties.iso_a3;
+                    onSelectCountry?.(code);
+                });
+
+        }
+
+        // === обновляем выделение ===
+        svg.selectAll(".country")
+            .classed(
+                "selected",
+                d =>
+                    selectedCountry &&
+                    d.id === selectedCountry.cca3
+            );
+
+    }, [selectedCountry, onSelectCountry]);
 
     return <div className="map" ref={ref}></div>;
 }

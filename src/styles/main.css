@@ -1,37 +1,34 @@
-/* === Тёмная тема === */
+/* БАЗА / ТЁМНАЯ ТЕМА */
+
 body {
+    margin: 0;
     background: #121212;
     color: #e0e0e0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .main {
     display: flex;
     height: 100vh;
+    transition: all 0.25s ease;
 }
 
-/* Левая панель — список стран */
+/* ЛЕВАЯ ПАНЕЛЬ — СПИСОК */
+
 .aside {
-    width: 250px;           /* фиксированная ширина панели */
-    padding: 16px;          /* внутренний отступ */
-    box-sizing: border-box; /* учитываем padding в ширине */
+    width: 260px;
+    padding: 16px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-}
 
-.aside input {
-    flex-shrink: 0;         /* не уменьшаем input по ширине */
-    width: 100%;            /* растягиваем по ширине контейнера */
-    box-sizing: border-box; /* padding внутри ширины */
-    padding: 8px 10px;
-    margin-bottom: 12px;
-    border-radius: 6px;
-    border: 1px solid #555;
-    background: #2a2a2a;
-    color: #e0e0e0;
-    font-size: 14px;
-}
+    background: #1a1a1a;
+    border-right: 1px solid #333;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.4);
 
+    transition: all 0.25s ease;
+}
 
 .aside h3 {
     margin-bottom: 12px;
@@ -39,17 +36,33 @@ body {
     color: #ffffff;
 }
 
+.aside input {
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border: 1px solid #555;
+    background: #2a2a2a;
+    color: #e0e0e0;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
 .aside ul {
     list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .aside li {
+    position: relative;
     padding: 10px 12px;
     margin-bottom: 6px;
     border-radius: 6px;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
     color: #e0e0e0;
+
+    transition: background 0.2s, transform 0.1s;
 }
 
 .aside li:hover {
@@ -59,10 +72,22 @@ body {
 
 .aside li.selected {
     background: #ff7043;
-    color: white;
+    color: #ffffff;
 }
 
-/* Центральная панель — карта */
+.aside li.selected::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 4px;
+    background: #ff7043;
+    border-radius: 2px;
+}
+
+/* ЦЕНТР — КАРТА */
+
 .map-container {
     flex: 1;
     padding: 16px;
@@ -70,26 +95,58 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+
+    transition: all 0.25s ease;
+}
+
+.map {
+    width: 100%;
+    height: 100%;
 }
 
 .map svg {
     width: 100%;
-    height: auto;
+    height: 100%;
     background: #1e1e1e;
     border-radius: 8px;
 }
 
-.map path {
-    stroke: #888;
+.country {
+    fill: #2a2a2a;
+    stroke: #666;
+    transition: fill 0.25s ease, transform 0.15s ease;
+    transform-origin: center;
 }
 
-/* Правая панель — информация о стране */
+.country.selected {
+    fill: #ff7043 !important;
+}
+
+.country:hover {
+    transform: scale(1.01);
+    cursor: pointer;
+}
+
+.country:hover:not(.selected) {
+    fill: #3f51b5;
+}
+
+/* ПРАВАЯ ПАНЕЛЬ — ДЕТАЛИ */
+
 .details-container {
     width: 300px;
+    padding: 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
     background: #1e1e1e;
     border-left: 1px solid #333;
-    padding: 16px;
-    overflow-y: auto;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.4);
+
+    transition: all 0.25s ease;
 }
 
 .details-container h2 {
@@ -107,4 +164,8 @@ body {
     margin-bottom: 8px;
     font-size: 16px;
     color: #e0e0e0;
+}
+
+.details-container p strong {
+    color: #ff7043;
 }
